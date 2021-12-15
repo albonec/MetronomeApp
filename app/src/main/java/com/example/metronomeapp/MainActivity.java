@@ -5,6 +5,7 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -38,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
         binding = ActivityMainBinding.inflate(getLayoutInflater());
 
         TempoInput = findViewById(R.id.TempoInput);
@@ -46,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
         stopBtn = findViewById(R.id.stopButton);
 
         final MediaPlayer playTick = MediaPlayer.create(this, R.raw.tick);
+        final MediaPlayer playA4 = MediaPlayer.create(this, R.raw.a);
 
         BottomNavigationView navView = findViewById(R.id.nav_view);
         // Passing each menu ID as a set of Ids because each
@@ -55,9 +59,13 @@ public class MainActivity extends AppCompatActivity {
         startBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                tempo = Integer.valueOf(TempoInput.getText().toString());
                 isClicked = false;
                 while (!isClicked) {
-                    tempo = Integer.valueOf(TempoInput.getText().toString());
+                    if(tempo == 440) {
+                        playA4.start();
+                        SystemClock.sleep(35000);
+                    }
                     playTick.start();
                     SystemClock.sleep((long) calcInterval(tempo));
                     //showToast(String.valueOf(calcInterval(tempo)));
